@@ -12,6 +12,6 @@ create database datawarehouse;
 
 create schema bronze;
 
-cretae schema sliver;
+create schema sliver;
 
 create schema gold;
