@@ -1,0 +1,138 @@
+-- Table crm_cust_info
+select top 100 * from bronze.crm_cust_info;
+select count(*) from bronze.crm_cust_info;
+
+select cst_id , 
+	count(*) as count from bronze.crm_cust_info
+group by cst_id
+having count(*) > 1 or count(*) is null;
+
+select * from bronze.crm_cust_info
+where cst_id = 29449;
+
+select 
+	cst_id,
+	cst_key,
+	trim(cst_firstname) as cst_firstname,
+	trim(cst_lastname) as cst_lastname,
+	CASE 
+	WHEN UPPER(TRIM(cst_marital_status)) = 'M' THEN 'married'
+	WHEN UPPER(TRIM(cst_marital_status)) = 'S' THEN 'single'
+	ELSE 'NA'
+	END AS cst_marital_status,
+	CASE 
+	WHEN UPPER(TRIM(cst_gender)) = 'M' THEN 'male'
+	WHEN UPPER(TRIM(cst_gender)) = 'F' THEN 'female'
+	ELSE 'NA' 
+	END AS cst_gender,
+	cst_create_date
+from(
+select 
+	*,
+	row_number() over(partition by cst_id order by cst_create_date DESC) as latest
+from
+bronze.crm_cust_info) t where latest = 1 and cst_id is not null;
+
+-- Table crm_cust_info
+select * from bronze.crm_cust_info;
+select * from silver.crm_cust_info;
+
+select * from silver.crm_prd_info;
+select count(*) from bronze.crm_prd_info;
+select prd_id , count(*) from bronze.crm_prd_info
+group by prd_id
+having count(*) >1
+
+select 
+	prd_id,
+	replace(substring(prd_key,1,5),'-','_') as cat_id,
+	substring(prd_key,7,len(prd_key)) as prd_key,
+	prd_nm,
+	isnull(prd_cost,0) as prd_cost,
+	case when upper(trim(prd_line)) = 'R' THEN 'Road'
+		 when upper(trim(prd_line)) = 'M' THEN 'Mountain'
+		 when upper(trim(prd_line)) = 'S' THEN 'other sales'
+		 when upper(trim(prd_line)) = 'T' THEN 'Touring'
+		 ELSE 'NA' END AS prd_line,
+	CAST(prd_start_dt AS DATE) AS prd_start_dt,
+	CAST(DATEADD(day, -1, LEAD(prd_start_dt) OVER(PARTITION BY prd_key ORDER BY prd_start_dt)) 
+    AS DATE) AS prd_end_dt
+	from bronze.crm_prd_info
+
+--table crm_sales_details
+select count(*) from bronze.crm_sales_details;
+
+select 
+	sls_ord_num,
+	sls_prd_key,
+	sls_cust_id,
+	CASE WHEN sls_order_dt is null or len(sls_order_dt) != 8 THEN NULL
+	ELSE CAST(CAST(sls_order_dt AS VARCHAR)AS DATE)
+	END AS sls_order_dt,
+	CASE WHEN sls_ship_dt is null or len(sls_ship_dt) != 8 THEN NULL
+	ELSE CAST(CAST(sls_ship_dt AS VARCHAR)AS DATE)
+	END AS sls_ship_dt,
+	CASE WHEN sls_due_dt is null or len(sls_due_dt) != 8 THEN NULL
+	ELSE CAST(CAST(sls_due_dt AS VARCHAR)AS DATE)
+	END AS sls_due_dt,
+	CASE WHEN sls_sales is null or sls_sales <=0 or sls_sales != sls_quantity * ABS(sls_price)
+		THEN sls_quantity * ABS(sls_price)
+		ELSE sls_sales
+		END AS sls_sales,
+	sls_quantity,
+	CASE WHEN sls_price is null or sls_sales <= 0
+	THEN sls_sales / NULLIF(sls_quantity,0)
+	ELSE sls_price
+	END AS sls_price
+from bronze.crm_sales_details;
+
+--table erp_cust_az12
+select count(*) from bronze.erp_cust_az12;
+select count(*) from silver.erp_cust_az12;
+
+select 
+cid,
+count(*) from bronze.erp_cust_az12
+group by cid
+having count(*) > 1;
+
+select
+	CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid , 4 , LEN(cid))
+	ELSE cid
+	END AS cid,
+	CASE WHEN bdate > GETDATE() THEN NULL
+	ELSE bdate
+	END AS bdate,
+	CASE WHEN trim(upper(gen)) IN ('M', 'MALE') THEN 'Male'
+		 WHEN trim(upper(gen)) IN ('F', 'FEMALE') THEN 'Female'
+		 ELSE 'NA'
+	END AS gen
+from bronze.erp_cust_az12;
+
+select * from silver.erp_cust_az12;
+
+--table erp_loc_a101
+select * from bronze.erp_loc_a101
+select * from silver.erp_loc_a101
+
+select 
+	replace(cid , '-' , '') AS cid,
+	CASE
+	WHEN trim(cntey) = 'DE' THEN 'Germany'
+	WHEN TRIM(cntey) in ('US','USA') THEN 'United States'
+	WHEN TRIM(cntey) = '' or cntey is null THEN 'NA'
+	ELSE TRIM(cntey)
+	END AS cntry
+	from bronze.erp_loc_a101;
+
+--table erp_px_cat_g1v2
+
+select * from bronze.erp_px_cat_g1v2;
+--every thing looks goo no need of transformations..
+	select * from silver.erp_px_cat_g1v2;
+select 
+id,
+cat,
+subcat,
+MAINTENANCE
+FROM bronze.erp_px_cat_g1v2;
