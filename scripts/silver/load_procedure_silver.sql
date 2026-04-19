@@ -1,4 +1,16 @@
-    CREATE OR ALTER PROCEDURE silver.load_silver AS
+/*
+create silver tables same as bronze tables
+creates procedure for loading the data from bronze layer to silver layer
+  > truncate the data in table before loading
+  > load the data into tables
+  > shows the execution time for each data load and whole batch
+  > error handling manages the errors
+  
+use:
+  EXEC silver.load_silver
+*/
+
+CREATE OR ALTER PROCEDURE silver.load_silver AS
 BEGIN
     DECLARE @start_time DATETIME , @end_time DATETIME , @batch_start_time DATETIME , @batch_end_time DATETIME;
     
