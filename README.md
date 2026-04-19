@@ -19,15 +19,3 @@ The warehouse processes data in three distinct stages to ensure data quality, sc
 * **Database / SQL Dialect:** T-SQL
 * **Core Architecture:** Medallion (Multi-hop) Data Architecture
 * **Version Control:** Git & GitHub
-
-## 📂 Repository Structure
-*Module-wise code implementations make it simple to deploy individual pipeline stages.*
-
-```text
-sql-datawarehouse-project/
-├── src/
-│   ├── bronze/          # Stored procedures for raw data ingestion (e.g., load_bronze.sql)
-│   ├── silver/          # Transformation scripts and data cleansing logic
-│   └── gold/            # Fact and dimension table DDLs and aggregation scripts
-├── docs/                # Architecture diagrams and schema documentation
-└── README.md
