@@ -1,8 +1,5 @@
 # SQL Data Warehouse Project
 
-[![GitHub repo size](https://img.shields.io/github/repo-size/bhupalreddythandlam/sql-datawarehouse-project)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
 ## 📌 Project Overview
 This repository contains the complete codebase for a modern **SQL Data Warehouse**. The project leverages a robust **Medallion Data Architecture (Multi-hop)** to systematically ingest, clean, and model enterprise data, ensuring it is analytics-ready for business intelligence.
 
