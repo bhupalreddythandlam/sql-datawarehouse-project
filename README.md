@@ -11,6 +11,8 @@ The data pipeline integrates two primary source systems:
 
 The warehouse processes data in three distinct stages to ensure data quality, scalability, and clarity:
 
+<img width="1205" height="741" alt="architecture" src="https://github.com/user-attachments/assets/dfa8c799-de78-4e2b-ae2d-5960681db32f" />
+
 * **🥉 Bronze Layer (Raw Data):** Acts as the landing zone. Data is ingested from the CRM and ERP systems in its native format. We utilize custom T-SQL stored procedures (e.g., `bronze.load_bronze`) to perform bulk data loading efficiently without immediate transformations.
 * **🥈 Silver Layer (Cleansed & Conformed):** The raw data undergoes filtering, data type casting, duplicate removal, and standardization. This layer acts as the single source of truth for the enterprise.
 * **🥇 Gold Layer (Business-Ready):** Data is modeled into dedicated fact and dimension tables (Star/Snowflake schemas) optimized for high-performance querying and downstream analytics.
